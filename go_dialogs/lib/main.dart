@@ -1,45 +1,97 @@
+import 'dart:ui';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
+final GoRouter _router = GoRouter(
+  routes: <RouteBase>[
+    GoRoute(
+      path: '/',
+      builder: (context, state) => MyHomePage(),
+      routes: <RouteBase>[
+        GoRoute(
+          path: 'license',
+          pageBuilder: (BuildContext context, GoRouterState state) {
+            return DialogPage(builder: (_) => AboutDialog());
+          },
+        ),
+      ],
+    ),
+  ],
+);
+
+// pageBuilder: (BuildContext context, GoRouterState state) {
+//   return DialogPage(builder: (context) => const AboutDialog());
+// },
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp.router(
+      routerConfig: _router,
       title: 'Navigator playground',
-      home: MyHomePage(title: 'Super important  screen'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  void _showLicensesDialog() {
-    showDialog(context: context, builder: (context) => const AboutDialog());
-  }
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
+      appBar: AppBar(title: const Text('Super important  screen')),
       body: Center(
         child: OutlinedButton(
-          onPressed: _showLicensesDialog,
+          onPressed: () => context.go('/license'),
           child: const Text("See licenses"),
         ),
       ),
     );
   }
 }
+
+/// A dialog page with Material entrance and exit animations, modal barrier color,
+/// and modal barrier behavior (dialog is dismissible with a tap on the barrier).
+class DialogPage<T> extends Page<T> {
+  final Offset? anchorPoint;
+  final Color? barrierColor;
+  final bool barrierDismissible;
+  final String? barrierLabel;
+  final bool useSafeArea;
+  final CapturedThemes? themes;
+  final WidgetBuilder builder;
+
+  const DialogPage({
+    required this.builder,
+    this.anchorPoint,
+    this.barrierColor = Colors.black54,
+    this.barrierDismissible = true,
+    this.barrierLabel,
+    this.useSafeArea = true,
+    this.themes,
+    super.key,
+    super.name,
+    super.arguments,
+    super.restorationId,
+  });
+
+  @override
+  Route<T> createRoute(BuildContext context) => DialogRoute<T>(
+      context: context,
+      settings: this,
+      builder: builder,
+      anchorPoint: anchorPoint,
+      barrierColor: barrierColor,
+      barrierDismissible: barrierDismissible,
+      barrierLabel: barrierLabel,
+      useSafeArea: useSafeArea,
+      themes: themes);
+}
+
