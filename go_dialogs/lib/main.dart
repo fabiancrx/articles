@@ -12,12 +12,22 @@ final GoRouter _router = GoRouter(
   routes: <RouteBase>[
     GoRoute(
       path: '/',
-      builder: (context, state) => MyHomePage(),
+      builder: (context, state) => const MyHomePage(),
       routes: <RouteBase>[
         GoRoute(
           path: 'license',
           pageBuilder: (BuildContext context, GoRouterState state) {
-            return DialogPage(builder: (_) => AboutDialog());
+            return DialogPage(builder: (_) => const AboutDialog());
+          },
+        ),
+        GoRoute(
+          path: 'sheet',
+          pageBuilder: (BuildContext context, GoRouterState state) {
+            return CupertinoModalPopupPage(
+                builder: (_) => const CupertinoActionSheet(
+                      title: Text("Dummy Title"),
+                      message: FlutterLogo(),
+                    ));
           },
         ),
       ],
@@ -48,9 +58,18 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Super important  screen')),
       body: Center(
-        child: OutlinedButton(
-          onPressed: () => context.go('/license'),
-          child: const Text("See licenses"),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            OutlinedButton(
+              onPressed: () => context.go('/license'),
+              child: const Text("See licenses"),
+            ),
+            OutlinedButton(
+              onPressed: () => context.go('/sheet'),
+              child: const Text("See sheet"),
+            ),
+          ],
         ),
       ),
     );
@@ -95,3 +114,33 @@ class DialogPage<T> extends Page<T> {
       themes: themes);
 }
 
+class CupertinoModalPopupPage<T> extends Page<T> {
+  final Offset? anchorPoint;
+  final Color? barrierColor;
+  final bool barrierDismissible;
+  final String barrierLabel;
+  final bool semanticsDismissible;
+  final WidgetBuilder builder;
+  final ImageFilter? filter;
+
+  const CupertinoModalPopupPage(
+      {required this.builder,
+      this.anchorPoint,
+      this.barrierColor = kCupertinoModalBarrierColor,
+      this.barrierDismissible = true,
+      this.barrierLabel = "Dismiss",
+      this.semanticsDismissible = true,
+      this.filter,
+      super.key});
+
+  @override
+  Route<T> createRoute(BuildContext context) => CupertinoModalPopupRoute<T>(
+      builder: builder,
+      barrierDismissible: barrierDismissible,
+      anchorPoint: anchorPoint,
+      barrierLabel: barrierLabel,
+      barrierColor: barrierColor,
+      filter: filter,
+      semanticsDismissible: semanticsDismissible,
+      settings: this);
+}
