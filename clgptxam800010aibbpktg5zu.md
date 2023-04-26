@@ -3,6 +3,7 @@ title: "Adding Modal Routes to your GoRouter"
 datePublished: Fri Apr 21 2023 00:44:40 GMT+0000 (Coordinated Universal Time)
 cuid: clgptxam800010aibbpktg5zu
 slug: adding-modal-routes-to-your-gorouter
+ogImage: https://cdn.hashnode.com/res/hashnode/image/upload/v1682474270200/056d9fd8-3240-4f05-9a7f-594b1558891e.gif
 tags: flutter, gorouter
 
 ---
